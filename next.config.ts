@@ -23,11 +23,19 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
       },
+    ],
+  },
+  devIndicators: {
+    buildActivity: false,
+  },
+  experimental: {
+    allowedDevOrigins: [
+      'https://6000-firebase-studio-1763916618762.cluster-c3a7z3wnwzapkx3rfr5kz62dac.cloudworkstations.dev',
     ],
   },
 };
