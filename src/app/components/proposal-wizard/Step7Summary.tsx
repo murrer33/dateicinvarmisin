@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ProposalData } from "@/types";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface Step7SummaryProps {
   data: ProposalData;
@@ -21,6 +22,13 @@ export default function Step7Summary({ data }: Step7SummaryProps) {
         </div>
         <CardDescription className="text-lg !mt-6">
           Sana en kısa sürede ulaşacağım! Sabırsızlanıyorum!
+        </CardDescription>
+        <CardDescription className="text-md !mt-4 text-muted-foreground">
+            O zamana kadar beni{" "}
+            <Link href="https://instagram.com/berkeutus" target="_blank" rel="noopener noreferrer" className="underline font-semibold hover:text-primary">
+                @berkeutus
+            </Link>{" "}
+            adresinden stalk'layabilirsin. 😉
         </CardDescription>
       </CardContent>
     </Card>
