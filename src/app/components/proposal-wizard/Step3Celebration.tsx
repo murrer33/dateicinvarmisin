@@ -22,7 +22,7 @@ export default function Step3Celebration({ onNext }: Step3CelebrationProps) {
   return (
     <Card className="w-full max-w-md text-center shadow-xl">
       <CardHeader>
-        <CardTitle className="text-5xl font-bold text-primary font-headline animate-pulse">YAAAAY!!</CardTitle>
+        <CardTitle className="text-5xl font-bold text-primary font-headline animate-pulse">HARİKA!</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col items-center space-y-4">
         {celebrationImage && (
@@ -36,7 +36,7 @@ export default function Step3Celebration({ onNext }: Step3CelebrationProps) {
             />
         )}
         <p className="text-lg text-muted-foreground">
-          Beni dünyanın en mutlu insanı yaptın! Bu bir randevu!
+          Pişman olmayacaksın! Harika bir randevu bizi bekliyor.
         </p>
       </CardContent>
     </Card>
