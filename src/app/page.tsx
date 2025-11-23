@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ProposalData } from '@/types';
 import Step1Intro from '@/app/components/proposal-wizard/Step1Intro';
 import Step2Proposal from '@/app/components/proposal-wizard/Step2Proposal';
@@ -8,10 +8,23 @@ import Step3Celebration from '@/app/components/proposal-wizard/Step3Celebration'
 import Step5Location from '@/app/components/proposal-wizard/Step5Location';
 import Step6Contact from '@/app/components/proposal-wizard/Step6Contact';
 import Step7Summary from '@/app/components/proposal-wizard/Step7Summary';
+import { useFirebase } from '@/firebase';
+import { initiateAnonymousSignIn } from '@/firebase/non-blocking-login';
+import { collection, doc } from 'firebase/firestore';
+import { addDocumentNonBlocking, setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ProposalPage() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ProposalData>({ dateType: 'Kahve' });
+
+  const { auth, firestore, user, isUserLoading } = useFirebase();
+
+  useEffect(() => {
+    if (auth && !user && !isUserLoading) {
+      initiateAnonymousSignIn(auth);
+    }
+  }, [auth, user, isUserLoading]);
 
   const handleNext = () => setStep(prev => prev + 1);
 
@@ -21,7 +34,23 @@ export default function ProposalPage() {
   };
 
   const handleContactSubmit = (contact: NonNullable<ProposalData['contact']>) => {
-    setData(prev => ({ ...prev, contact }));
+    const finalData = { ...data, contact };
+    setData(finalData);
+
+    if (user && firestore) {
+      const proposalId = uuidv4();
+      const userProposalsRef = collection(firestore, 'users', user.uid, 'date_proposals');
+      const proposalRef = doc(userProposalsRef, proposalId);
+      
+      const dataToSave = {
+        ...finalData,
+        id: proposalId,
+        proposalDate: new Date().toISOString(),
+      };
+
+      setDocumentNonBlocking(proposalRef, dataToSave, { merge: false });
+    }
+
     handleNext();
   };
   
