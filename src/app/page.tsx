@@ -5,21 +5,15 @@ import type { ProposalData } from '@/types';
 import Step1Intro from '@/app/components/proposal-wizard/Step1Intro';
 import Step2Proposal from '@/app/components/proposal-wizard/Step2Proposal';
 import Step3Celebration from '@/app/components/proposal-wizard/Step3Celebration';
-import Step4DateType from '@/app/components/proposal-wizard/Step4DateType';
 import Step5Location from '@/app/components/proposal-wizard/Step5Location';
 import Step6Contact from '@/app/components/proposal-wizard/Step6Contact';
 import Step7Summary from '@/app/components/proposal-wizard/Step7Summary';
 
 export default function ProposalPage() {
   const [step, setStep] = useState(1);
-  const [data, setData] = useState<ProposalData>({});
+  const [data, setData] = useState<ProposalData>({ dateType: 'Kahve' });
 
   const handleNext = () => setStep(prev => prev + 1);
-
-  const handleSelectDateType = (dateType: NonNullable<ProposalData['dateType']>) => {
-    setData(prev => ({ ...prev, dateType }));
-    handleNext();
-  };
 
   const handleSelectLocation = (location: NonNullable<ProposalData['location']>) => {
     setData(prev => ({ ...prev, location }));
@@ -40,12 +34,10 @@ export default function ProposalPage() {
       case 3:
         return <Step3Celebration onNext={handleNext} />;
       case 4:
-        return <Step4DateType onSelect={handleSelectDateType} />;
-      case 5:
         return <Step5Location onSelect={handleSelectLocation} />;
-      case 6:
+      case 5:
         return <Step6Contact onSubmit={handleContactSubmit} />;
-      case 7:
+      case 6:
         return <Step7Summary data={data} />;
       default:
         return <Step1Intro onNext={handleNext} />;
