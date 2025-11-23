@@ -1,3 +1,16 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "intro-gif",
+      "description": "A cute shy animated character hiding its face.",
+      "imageUrl": "https://images.unsplash.com/photo-1602614051784-edf8477f3717?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzaHklMjBjdXRlfGVufDB8fHx8MTc2MzkyMDg5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "shy cute"
+    },
+    {
+      "id": "celebration-gif",
+      "description": "A cute animated character jumping for joy.",
+      "imageUrl": "https://images.unsplash.com/photo-1635349134541-53a64bed9583?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxoYXBweSUyMGNlbGVicmF0aW9ufGVufDB8fHx8MTc2MzkyMDkwMHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "happy celebration"
+    }
+  ]
 }
