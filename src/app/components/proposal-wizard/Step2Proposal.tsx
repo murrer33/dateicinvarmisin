@@ -63,13 +63,13 @@ export default function Step2Proposal({ onYes }: Step2ProposalProps) {
   return (
     <Card className="w-full max-w-md text-center shadow-xl">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold font-headline">Benimle çıkar mısın?</CardTitle>
-        <CardDescription className="text-md">Sana yemek ısmarlarım söz 🍔</CardDescription>
+        <CardTitle className="text-3xl font-bold font-headline">Benimle bir kahve içmeye ne dersin?</CardTitle>
+        <CardDescription className="text-md">Ismarlarım, söz ☕️</CardDescription>
       </CardHeader>
       <CardContent ref={containerRef} className="relative h-32 flex items-center justify-center">
         <div className="flex gap-4">
             <Button onClick={handleYesClick} size="lg" variant="secondary" className="font-bold z-10">
-            Evet
+            Olur
             </Button>
             <Button
                 variant="destructive"
@@ -79,7 +79,7 @@ export default function Step2Proposal({ onYes }: Step2ProposalProps) {
                 className="font-bold transition-all duration-300 ease-in-out"
                 style={isFleeing ? { position: 'absolute', ...noButtonPosition } : {}}
             >
-            Hayır
+            Kalsın
             </Button>
         </div>
       </CardContent>
