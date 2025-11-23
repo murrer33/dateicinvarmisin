@@ -29,7 +29,7 @@ export default function Step1Intro({ onNext }: Step1IntroProps) {
             />
         )}
         <p className="text-lg text-muted-foreground">
-          Sana uzun zamandır söylemek istediğim bir şey var... ama biraz utanıyorum.
+          Küçük bir sırrım var... ve seninle paylaşmak istiyorum.
         </p>
       </CardContent>
       <CardFooter className="flex justify-center">
