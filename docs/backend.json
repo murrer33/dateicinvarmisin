@@ -1,0 +1,75 @@
+{
+  "entities": {
+    "DateProposal": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "DateProposal",
+      "type": "object",
+      "description": "Represents a date proposal and user preferences.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Date Proposal entity."
+        },
+        "dateType": {
+          "type": "string",
+          "description": "The type of date selected by the user (e.g., coffee, dinner)."
+        },
+        "locationPreference": {
+          "type": "string",
+          "description": "The user's location preference for the date (e.g., surprise, user's choice)."
+        },
+        "contactMethod": {
+          "type": "string",
+          "description": "The method of contact provided by the user (e.g., phone number, Instagram)."
+        },
+        "contactInfo": {
+          "type": "string",
+          "description": "The user's contact information (e.g., phone number, Instagram handle)."
+        },
+        "proposalDate": {
+          "type": "string",
+          "description": "The date the proposal was made.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "dateType",
+        "locationPreference",
+        "contactMethod",
+        "contactInfo"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}/date_proposals/{dateProposalId}",
+        "definition": {
+          "entityName": "DateProposal",
+          "schema": {
+            "$ref": "#/backend/entities/DateProposal"
+          },
+          "description": "Stores date proposals submitted by a user, ensuring only the user can access their proposals.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique ID of the user submitting the date proposal."
+            },
+            {
+              "name": "dateProposalId",
+              "description": "The unique ID of the date proposal."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The data structure prioritizes secure access to user contact information collected during the date proposal process. It isolates user-submitted data under their respective user IDs, leveraging path-based ownership for enhanced security and simplified rules. This ensures that only the authenticated user can access their own contact proposals. The design avoids any reliance on `get()` calls in security rules (Authorization Independence).  QAPs are addressed by the secure path-based ownership preventing unauthorized listing of proposals."
+  }
+}

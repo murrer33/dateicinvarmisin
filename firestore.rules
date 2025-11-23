@@ -1,0 +1,97 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict user-ownership model. All data is considered private and can only be
+ * accessed by the user who created it. This provides strong guarantees around the privacy of sensitive user information,
+ * such as contact details submitted in date proposals.
+ *
+ * Data Structure: All application data is stored in a user-centric hierarchy. Specifically, date proposals are nested
+ * within a subcollection under the user who owns them: /users/{userId}/date_proposals/{dateProposalId}. This structure
+ * makes ownership checks simple, fast, and secure, as authorization can be determined directly from the document path.
+ *
+ * Key Security Decisions:
+ * - Strict Ownership: All operations (read, write, delete) are gated by an ownership check. A user can only ever interact
+ *   with data located under their own user ID path.
+ * - No Public Access: There are no publicly readable collections. All data requires user authentication.
+ * - No User Listing: It is not possible to list documents in the top-level `/users` collection, preventing enumeration attacks.
+ * - Default Deny: Any path not explicitly matched is denied access by default.
+ *
+ * Denormalization for Authorization: The security model is built on path-based authorization. The user's UID is part of the
+ * document path (`/users/{userId}/...`), which is the most efficient form of authorization as it requires no extra database
+ * reads (`get()` calls) to verify ownership.
+ *
+ * Structural Segregation: This principle is not currently applicable as there is no mixed public/private data. All data
+ * is private to the user.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------------
+    // Helper Functions
+    // ------------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the requesting user's UID matches the provided userId from the path.
+     * This is the primary function for enforcing the user-ownership model.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * For update/delete operations, confirms the document exists AND the user is the owner.
+     * Prevents writes to non-existent documents.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    /**
+     * On create, validates that the document's internal 'id' field matches the document ID in the path.
+     * Enforces relational integrity from the start.
+     */
+    function hasValidIdOnCreate(docId) {
+      return request.resource.data.id == docId;
+    }
+
+    /**
+     * On update, ensures the document's internal 'id' field cannot be changed.
+     * This makes the core relationship between the document and its ID immutable.
+     */
+    function isIdImmutable() {
+      return request.resource.data.id == resource.data.id;
+    }
+
+
+    // ------------------------------------------------------------------------
+    // Collection Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Secures a user's private date proposals. Only the authenticated owner of the proposals
+     *              can read, create, update, or delete them. This protects sensitive contact information.
+     * @path        /users/{userId}/date_proposals/{dateProposalId}
+     * @allow       (create) An authenticated user with UID 'user123' can create a new document at
+     *              /users/user123/date_proposals/proposal-abc.
+     * @deny        (get) An authenticated user with UID 'user456' is denied from reading a document at
+     *              /users/user123/date_proposals/proposal-abc.
+     * @principle   Restricts access to a user's own data tree based on their authenticated UID.
+     */
+    match /users/{userId}/date_proposals/{dateProposalId} {
+      // READ: Only the owner can get or list their own proposals.
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+
+      // WRITE: Only the owner can write, with additional integrity checks.
+      allow create: if isOwner(userId) && hasValidIdOnCreate(dateProposalId);
+      allow update: if isExistingOwner(userId) && isIdImmutable();
+      allow delete: if isExistingOwner(userId);
+    }
+  }
+}
